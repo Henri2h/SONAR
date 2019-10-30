@@ -16,17 +16,19 @@ SONAR::SONAR()
     outputPlayer.initializeAudio(format);
 }
 
-void SONAR::getDistance(){
+void SONAR::getDistance()
+{
 }
 
-
-void SONAR::startSound(){
-    auto sound =  chrip.getChrip();
+void SONAR::startSound()
+{
+    auto sound = chrip.getChrip();
     inputPlayer.Record(800); // 300 ms
     outputPlayer.Play(sound);
 }
 
-QList<float> SONAR::getResults(){
+QList<float> SONAR::getResults()
+{
     auto data = inputPlayer.getRecording();
     qDebug() << "Going to play : ";
 
@@ -34,5 +36,3 @@ QList<float> SONAR::getResults(){
     //outputPlayer.Play(data);
     return data;
 }
-
-

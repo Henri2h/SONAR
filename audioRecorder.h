@@ -82,7 +82,6 @@ signals:
     void update();
 };
 
-
 class AudioRecorder : public QObject
 {
     Q_OBJECT

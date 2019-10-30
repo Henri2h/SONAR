@@ -5,7 +5,6 @@
 #include <QStringList>
 #include <QDebug>
 
-
 class Chrip
 {
 public:

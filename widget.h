@@ -55,7 +55,7 @@ private slots:
 
 private:
     QChart *m_chart;
-    QLineSeries *m_series ;
+    QLineSeries *m_series;
     SONAR sn;
     QTimer *timer;
 

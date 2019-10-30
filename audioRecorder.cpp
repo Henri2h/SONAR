@@ -66,9 +66,11 @@
 AudioInfo::AudioInfo(const QAudioFormat &format)
     : m_format(format)
 {
-    switch (m_format.sampleSize()) {
+    switch (m_format.sampleSize())
+    {
     case 8:
-        switch (m_format.sampleType()) {
+        switch (m_format.sampleType())
+        {
         case QAudioFormat::UnSignedInt:
             m_maxAmplitude = 255;
             break;
@@ -80,7 +82,8 @@ AudioInfo::AudioInfo(const QAudioFormat &format)
         }
         break;
     case 16:
-        switch (m_format.sampleType()) {
+        switch (m_format.sampleType())
+        {
         case QAudioFormat::UnSignedInt:
             m_maxAmplitude = 65535;
             break;
@@ -93,7 +96,8 @@ AudioInfo::AudioInfo(const QAudioFormat &format)
         break;
 
     case 32:
-        switch (m_format.sampleType()) {
+        switch (m_format.sampleType())
+        {
         case QAudioFormat::UnSignedInt:
             m_maxAmplitude = 0xffffffff;
             break;
@@ -108,7 +112,7 @@ AudioInfo::AudioInfo(const QAudioFormat &format)
         break;
 
     default:
-        qDebug()<<"default";
+        qDebug() << "default";
         break;
     }
 }
@@ -133,7 +137,8 @@ qint64 AudioInfo::readData(char *data, qint64 maxlen)
 
 qint64 AudioInfo::writeData(const char *data, qint64 len)
 {
-    if (m_maxAmplitude) {
+    if (m_maxAmplitude)
+    {
         Q_ASSERT(m_format.sampleSize() % 8 == 0);
         const int channelBytes = m_format.sampleSize() / 8;
         const int sampleBytes = m_format.channelCount() * channelBytes;
@@ -142,43 +147,58 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
 
         const unsigned char *ptr = reinterpret_cast<const unsigned char *>(data);
 
-        for (int i = 0; i < numSamples; ++i) {
-            for (int j = 0; j < m_format.channelCount(); ++j) {
+        for (int i = 0; i < numSamples; ++i)
+        {
+            for (int j = 0; j < m_format.channelCount(); ++j)
+            {
                 qreal value = 0;
 
-                if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::UnSignedInt) {
-                    value = *reinterpret_cast<const quint8*>(ptr);
-                } else if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::SignedInt) {
-                    value = *reinterpret_cast<const qint8*>(ptr);
-                } else if (m_format.sampleSize() == 16 && m_format.sampleType() == QAudioFormat::UnSignedInt) {
+                if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::UnSignedInt)
+                {
+                    value = *reinterpret_cast<const quint8 *>(ptr);
+                }
+                else if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::SignedInt)
+                {
+                    value = *reinterpret_cast<const qint8 *>(ptr);
+                }
+                else if (m_format.sampleSize() == 16 && m_format.sampleType() == QAudioFormat::UnSignedInt)
+                {
                     if (m_format.byteOrder() == QAudioFormat::LittleEndian)
                         value = qFromLittleEndian<quint16>(ptr);
                     else
                         value = qFromBigEndian<quint16>(ptr);
-                } else if (m_format.sampleSize() == 16 && m_format.sampleType() == QAudioFormat::SignedInt) {
+                }
+                else if (m_format.sampleSize() == 16 && m_format.sampleType() == QAudioFormat::SignedInt)
+                {
                     if (m_format.byteOrder() == QAudioFormat::LittleEndian)
                         value = qFromLittleEndian<qint16>(ptr);
                     else
                         value = qFromBigEndian<qint16>(ptr);
-                } else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::UnSignedInt) {
+                }
+                else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::UnSignedInt)
+                {
                     if (m_format.byteOrder() == QAudioFormat::LittleEndian)
                         value = qFromLittleEndian<quint32>(ptr);
                     else
                         value = qFromBigEndian<quint32>(ptr);
-                } else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::SignedInt) {
+                }
+                else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::SignedInt)
+                {
                     if (m_format.byteOrder() == QAudioFormat::LittleEndian)
                         value = qFromLittleEndian<qint32>(ptr);
                     else
                         value = qFromBigEndian<qint32>(ptr);
-                } else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::Float) {
-                    value = *reinterpret_cast<const float*>(ptr) * 0x7fffffff; // assumes 0-1.0
+                }
+                else if (m_format.sampleSize() == 32 && m_format.sampleType() == QAudioFormat::Float)
+                {
+                    value = *reinterpret_cast<const float *>(ptr) * 0x7fffffff; // assumes 0-1.0
                 }
 
-                float q = value*1.0/m_maxAmplitude;
-
+                float q = value * 1.0 / m_maxAmplitude;
 
                 // setup saving
-                if(samplesToRecords > 0){
+                if (samplesToRecords > 0)
+                {
                     soundData.append(q);
                     samplesToRecords--;
                 }
@@ -192,31 +212,37 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
     return len;
 }
 
-bool AudioInfo::resetData(){
+bool AudioInfo::resetData()
+{
     soundData.clear();
     return true;
 }
 
-void AudioInfo::startRecording(int samples){ // should check if we can record
+void AudioInfo::startRecording(int samples)
+{ // should check if we can record
     soundData.clear();
     samplesToRecords = samples;
 }
 
-bool AudioInfo::isRecording(){
-    if(samplesToRecords > 0) return true;
-    else return false;
+bool AudioInfo::isRecording()
+{
+    if (samplesToRecords > 0)
+        return true;
+    else
+        return false;
 }
 
 AudioRecorder::AudioRecorder()
 {
-//    initializeAudio(QAudioDeviceInfo::defaultInputDevice());
+    //    initializeAudio(QAudioDeviceInfo::defaultInputDevice());
 }
 
 void AudioRecorder::initializeAudio(QAudioFormat format)
 {
     QAudioDeviceInfo deviceInfo = QAudioDeviceInfo::defaultInputDevice();
 
-    if (!deviceInfo.isFormatSupported(format)) {
+    if (!deviceInfo.isFormatSupported(format))
+    {
         qWarning() << "Default format not supported - trying to use nearest";
         format = deviceInfo.nearestFormat(format);
     }
@@ -231,22 +257,24 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
     enabled = true;
 }
 
+void AudioRecorder::Record(int time)
+{ // time in ms
 
-void AudioRecorder::Record(int time){ // time in ms
+    int samples = m_format.sampleRate() * time / 1000; // get number of sample to record
 
-    int samples = m_format.sampleRate()*time/1000; // get number of sample to record
-
-    if(m_audioInfo->isRecording() == false){
+    if (m_audioInfo->isRecording() == false)
+    {
 
         // reset data and start recording samples samples
         m_audioInfo->startRecording(samples);
 
         qDebug() << "Asking to record";
     }
-    else{
-            qWarning() << "Already recording";
-        }
+    else
+    {
+        qWarning() << "Already recording";
     }
+}
 
 void AudioRecorder::StopRecording()
 {
@@ -258,12 +286,14 @@ void AudioRecorder::StopRecording()
     //delete m_audioInput();
 
     QList<float> sd = m_audioInfo->soundData;
-    qDebug() << "Final length : " << sd.length()/48000;
+    qDebug() << "Final length : " << sd.length() / 48000;
 }
 
-QList<float> AudioRecorder::getRecording(){
-    while(m_audioInfo->isRecording()){
-        qDebug()<<"Wait";
+QList<float> AudioRecorder::getRecording()
+{
+    while (m_audioInfo->isRecording())
+    {
+        qDebug() << "Wait";
     }
     qDebug("Not anymore recording get data :");
     qDebug() << "buffer length : " << m_audioInfo->soundData.length();

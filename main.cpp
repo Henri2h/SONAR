@@ -42,22 +42,26 @@ int main(int argc, char *argv[])
     const QAudioDeviceInfo inputDevice = QAudioDeviceInfo::defaultInputDevice();
     const QAudioDeviceInfo outputDevice = QAudioDeviceInfo::defaultOutputDevice();
 
-    if(false){
+    if (false)
+    {
         qDebug() << "Data from the microphone : " << inputDevice.deviceName().toStdString().c_str();
 
         QList<int> supportedInputSampleRate = inputDevice.supportedSampleRates();
 
-        for(int i = 0; i < supportedInputSampleRate.count(); i++){
+        for (int i = 0; i < supportedInputSampleRate.count(); i++)
+        {
             qDebug() << "Supported input sample rate : " << supportedInputSampleRate[i];
         }
         QList<int> supportedOutputSampleRate = outputDevice.supportedSampleRates();
 
-        for(int i = 0; i < supportedOutputSampleRate.count(); i++){
+        for (int i = 0; i < supportedOutputSampleRate.count(); i++)
+        {
             qDebug() << "Supported output sample rate : " << supportedOutputSampleRate[i];
         }
     }
 
-    if (inputDevice.isNull()) {
+    if (inputDevice.isNull())
+    {
         QMessageBox::warning(nullptr, "audio",
                              "There is no audio input device available.");
         return -1;
@@ -67,4 +71,3 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
-

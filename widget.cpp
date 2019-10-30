@@ -43,16 +43,16 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
-    QWidget(parent),
-    m_chart(new QChart),
-    m_series(new QLineSeries)
+Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) : QWidget(parent),
+                                                                      m_chart(new QChart),
+                                                                      m_series(new QLineSeries)
 {
 
     // load buffer
     int sampleCount = 20000;
 
-    if (m_buffer.isEmpty()) {
+    if (m_buffer.isEmpty())
+    {
         m_buffer.reserve(sampleCount);
         for (int i = 0; i < sampleCount; ++i)
             m_buffer.append(QPointF(i, 0));
@@ -94,30 +94,30 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
     timer->start(1000);
 }
 
-
-
-void Widget::startGettingDistance(){
+void Widget::startGettingDistance()
+{
     sn.startSound();
     QTimer::singleShot(900, this, SLOT(getresults()));
 }
 
-void Widget::getresults(){
+void Widget::getresults()
+{
 
     qDebug() << "Going to get results";
     QList<float> data = sn.getResults();
     int l = data.length();
-    if(l > m_buffer.length()) l = m_buffer.length();
-    for(int i =0; i < l; i++){
+    if (l > m_buffer.length())
+        l = m_buffer.length();
+    for (int i = 0; i < l; i++)
+    {
         m_buffer[i].setY(data[i]);
     }
     //m_series->append(points);
 
     m_series->replace(m_buffer);
 
-
     qDebug() << "Going to get results - done";
 }
-
 
 Widget::~Widget()
 {
