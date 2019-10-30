@@ -50,7 +50,7 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
 {
 
     // load buffer
-    int sampleCount = 2*48000;
+    int sampleCount = 20000;
 
     if (m_buffer.isEmpty()) {
         m_buffer.reserve(sampleCount);
@@ -62,7 +62,7 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
     chartView->setMinimumSize(800, 600);
     m_chart->addSeries(m_series);
     QValueAxis *axisX = new QValueAxis;
-    axisX->setRange(0, 48000);
+    axisX->setRange(0, sampleCount);
     axisX->setLabelFormat("%g");
     axisX->setTitleText("Samples");
     QValueAxis *axisY = new QValueAxis;
@@ -91,14 +91,14 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&Widget::startGettingDistance));
-    timer->start(4000);
+    timer->start(1000);
 }
 
 
 
 void Widget::startGettingDistance(){
     sn.startSound();
-    QTimer::singleShot(2300, this, SLOT(getresults()));
+    QTimer::singleShot(900, this, SLOT(getresults()));
 }
 
 void Widget::getresults(){

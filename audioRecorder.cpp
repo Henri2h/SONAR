@@ -212,13 +212,13 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
 }
 
 
-void AudioRecorder::Record(int time){
+void AudioRecorder::Record(int time){ // time in ms
     m_audioInfo->resetData();
     qDebug() << "Asking to record";
 if(isRecording == false){
     m_audioInput->stop();
     m_audioInfo->start();
-    QTimer::singleShot(time * 1000, this, SLOT(StopRecording()));
+    QTimer::singleShot(time, this, SLOT(StopRecording()));
     m_audioInput->start(m_audioInfo.data());
     isRecording = true;
 }

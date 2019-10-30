@@ -22,7 +22,7 @@ void SONAR::getDistance(){
 
 void SONAR::startSound(){
     auto sound =  chrip.getChrip();
-    inputPlayer.Record(2);
+    inputPlayer.Record(800); // 300 ms
     outputPlayer.Play(sound);
 }
 
