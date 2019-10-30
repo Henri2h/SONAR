@@ -42,8 +42,6 @@ QT_CHARTS_END_NAMESPACE
 
 QT_CHARTS_USE_NAMESPACE
 
-class XYSeriesIODevice;
-
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -56,7 +54,6 @@ private slots:
     void getresults();
 
 private:
-    XYSeriesIODevice *m_device = nullptr;
     QChart *m_chart;
     QLineSeries *m_series ;
     SONAR sn;
