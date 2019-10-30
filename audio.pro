@@ -5,9 +5,7 @@ HEADERS += \
     audioRecorder.h \
     chrip.h \
     sonar.h \
-    threadrec.h \
-    widget.h \
-    xyseriesiodevice.h
+    widget.h
 
 SOURCES += \
     audioPlayer.cpp \
@@ -15,9 +13,7 @@ SOURCES += \
     chrip.cpp \
     main.cpp\
     sonar.cpp \
-    threadrec.cpp \
-    widget.cpp \
-    xyseriesiodevice.cpp
+    widget.cpp
 
 target.path = $$[QT_INSTALL_EXAMPLES]/charts/audio
 INSTALLS += target
