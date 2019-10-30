@@ -65,13 +65,16 @@ public:
 
     void start();
     void stop();
+    void startRecording(int samples);
     bool resetData();
+    bool isRecording();
 
     qint64 readData(char *data, qint64 maxlen) override;
     qint64 writeData(const char *data, qint64 len) override;
     QList<float> soundData;
 
 private:
+    int samplesToRecords = 0;
     const QAudioFormat m_format;
     quint32 m_maxAmplitude = 0;
 
@@ -94,8 +97,8 @@ private slots:
     void StopRecording();
 
 private:
-    bool isRecording = false;
-    const QAudioFormat m_format;
+    bool enabled = false;
+    QAudioFormat m_format;
     QScopedPointer<AudioInfo> m_audioInfo;
     QScopedPointer<QAudioInput> m_audioInput;
 };

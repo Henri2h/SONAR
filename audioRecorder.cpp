@@ -176,7 +176,12 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
 
                 float q = value*1.0/m_maxAmplitude;
 
-                soundData.append(q);
+
+                // setup saving
+                if(samplesToRecords > 0){
+                    soundData.append(q);
+                    samplesToRecords--;
+                }
 
                 ptr += channelBytes;
             }
@@ -192,6 +197,15 @@ bool AudioInfo::resetData(){
     return true;
 }
 
+void AudioInfo::startRecording(int samples){ // should check if we can record
+    soundData.clear();
+    samplesToRecords = samples;
+}
+
+bool AudioInfo::isRecording(){
+    if(samplesToRecords > 0) return true;
+    else return false;
+}
 
 AudioRecorder::AudioRecorder()
 {
@@ -206,30 +220,37 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
         qWarning() << "Default format not supported - trying to use nearest";
         format = deviceInfo.nearestFormat(format);
     }
+    m_format = format;
 
     m_audioInfo.reset(new AudioInfo(format));
     m_audioInput.reset(new QAudioInput(deviceInfo, format));
+
+    m_audioInfo->start();
+    m_audioInput->start(m_audioInfo.data());
+    // to set the device to be constantly recording
+    enabled = true;
 }
 
 
 void AudioRecorder::Record(int time){ // time in ms
-    m_audioInfo->resetData();
-    qDebug() << "Asking to record";
-if(isRecording == false){
-    m_audioInput->stop();
-    m_audioInfo->start();
-    QTimer::singleShot(time, this, SLOT(StopRecording()));
-    m_audioInput->start(m_audioInfo.data());
-    isRecording = true;
-}
-else{
-        qWarning() << "Already recording";
+
+    int samples = m_format.sampleRate()*time/1000; // get number of sample to record
+
+    if(m_audioInfo->isRecording() == false){
+
+        // reset data and start recording samples samples
+        m_audioInfo->startRecording(samples);
+
+        qDebug() << "Asking to record";
     }
-}
+    else{
+            qWarning() << "Already recording";
+        }
+    }
 
 void AudioRecorder::StopRecording()
 {
-    isRecording = false;
+    enabled = false;
     m_audioInput->stop();
     m_audioInfo->stop();
     m_audioInput->disconnect(this);
@@ -241,7 +262,7 @@ void AudioRecorder::StopRecording()
 }
 
 QList<float> AudioRecorder::getRecording(){
-    while(isRecording){
+    while(m_audioInfo->isRecording()){
         qDebug()<<"Wait";
     }
     qDebug("Not anymore recording get data :");
