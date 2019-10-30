@@ -29,7 +29,9 @@ void SONAR::startSound(){
 QList<float> SONAR::getResults(){
     auto data = inputPlayer.getRecording();
     qDebug() << "Going to play : ";
-    outputPlayer.Play(data);
+
+    // test if playback work
+    //outputPlayer.Play(data);
     return data;
 }
 

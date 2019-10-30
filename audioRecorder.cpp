@@ -187,6 +187,10 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
     return len;
 }
 
+bool AudioInfo::resetData(){
+    soundData.clear();
+    return true;
+}
 
 
 AudioRecorder::AudioRecorder()
@@ -207,11 +211,9 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
     m_audioInput.reset(new QAudioInput(deviceInfo, format));
 }
 
-void startR(QScopedPointer<AudioInfo> m_audioInfo, QScopedPointer<QAudioInput> m_audioInput){
-    m_audioInput->start(m_audioInfo.data());
-}
 
 void AudioRecorder::Record(int time){
+    m_audioInfo->resetData();
     qDebug() << "Asking to record";
 if(isRecording == false){
     m_audioInput->stop();

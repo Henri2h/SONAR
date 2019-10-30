@@ -49,11 +49,20 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
     m_series(new QLineSeries)
 {
 
+    // load buffer
+    int sampleCount = 2*48000;
+
+    if (m_buffer.isEmpty()) {
+        m_buffer.reserve(sampleCount);
+        for (int i = 0; i < sampleCount; ++i)
+            m_buffer.append(QPointF(i, 0));
+    }
+
     QChartView *chartView = new QChartView(m_chart);
     chartView->setMinimumSize(800, 600);
     m_chart->addSeries(m_series);
     QValueAxis *axisX = new QValueAxis;
-    axisX->setRange(0, 3200);
+    axisX->setRange(0, 48000);
     axisX->setLabelFormat("%g");
     axisX->setTitleText("Samples");
     QValueAxis *axisY = new QValueAxis;
@@ -79,6 +88,10 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) :
     qb->setText("Start");
 
     startGettingDistance();
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&Widget::startGettingDistance));
+    timer->start(4000);
 }
 
 
@@ -89,15 +102,19 @@ void Widget::startGettingDistance(){
 }
 
 void Widget::getresults(){
+
     qDebug() << "Going to get results";
     QList<float> data = sn.getResults();
-    QList<QPointF> points;
-    for(int i =0; i < 3200; i++){
-        QPointF p = QPointF(i, data[i]);
-        points.append(p);
-        qDebug() << i << "d : " << data[i];
+    int l = data.length();
+    if(l > m_buffer.length()) l = m_buffer.length();
+    for(int i =0; i < l; i++){
+        m_buffer[i].setY(data[i]);
     }
-    m_series->append(points);
+    //m_series->append(points);
+
+    m_series->replace(m_buffer);
+
+
     qDebug() << "Going to get results - done";
 }
 

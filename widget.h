@@ -57,6 +57,9 @@ private:
     QChart *m_chart;
     QLineSeries *m_series ;
     SONAR sn;
+    QTimer *timer;
+
+    QVector<QPointF> m_buffer;
 };
 
 #endif // WIDGET_H
