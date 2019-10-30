@@ -5,7 +5,6 @@
 #include "audioRecorder.h"
 
 #include "chrip.h"
-#include "threadrec.h"
 
 class SONAR
 {
@@ -18,7 +17,6 @@ public:
 private:
     AudioPlayer outputPlayer;
     AudioRecorder inputPlayer;
-    threadrec threadRec;
     Chrip chrip;
 
 private slots:

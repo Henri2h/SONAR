@@ -1,11 +1,8 @@
 #include "sonar.h"
-#include <QFuture>
-#include <QtConcurrent/QtConcurrentRun>
 
 SONAR::SONAR()
 {
     qDebug() << "Sonar started";
-  //  outputPlayer.startPlaying();
 
     QAudioFormat format;
     format.setSampleRate(48000);

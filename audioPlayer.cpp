@@ -57,6 +57,8 @@
 #include <qmath.h>
 #include <qendian.h>
 #include <QBuffer>
+
+
 AudioPlayer::AudioPlayer()
     : m_pushTimer(new QTimer(this))
 {

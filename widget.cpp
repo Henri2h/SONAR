@@ -31,6 +31,7 @@
 
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QtMultimedia/QAudioInput>
+
 #include <QtWidgets/QLabel>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -38,7 +39,6 @@
 #include <QtCharts/QValueAxis>
 
 #include <QtWidgets/QVBoxLayout>
-
 #include <QDebug>
 
 QT_CHARTS_USE_NAMESPACE

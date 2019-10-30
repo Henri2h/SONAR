@@ -53,11 +53,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <QFuture>
-#include <QtConcurrent/QtConcurrentRun>
-#include <QThread>
-
-
 #include <QDateTime>
 #include <QDebug>
 #include <QPainter>
@@ -67,7 +62,6 @@
 #include <qendian.h>
 #include <QBuffer>
 #include <QTimer>
-#include <QThread>
 
 AudioInfo::AudioInfo(const QAudioFormat &format)
     : m_format(format)
@@ -211,11 +205,6 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
 
     m_audioInfo.reset(new AudioInfo(format));
     m_audioInput.reset(new QAudioInput(deviceInfo, format));
-
-    qreal initialVolume = QAudio::convertVolume(m_audioInput->volume(),
-                                                QAudio::LinearVolumeScale,
-                                               QAudio::LogarithmicVolumeScale);
-
 }
 
 void startR(QScopedPointer<AudioInfo> m_audioInfo, QScopedPointer<QAudioInput> m_audioInput){
