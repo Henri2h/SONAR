@@ -259,16 +259,12 @@ void AudioRecorder::initializeAudio(QAudioFormat format)
 
 void AudioRecorder::Record(int time)
 { // time in ms
-
     int samples = m_format.sampleRate() * time / 1000; // get number of sample to record
 
     if (m_audioInfo->isRecording() == false)
     {
-
         // reset data and start recording samples samples
         m_audioInfo->startRecording(samples);
-
-        qDebug() << "Asking to record";
     }
     else
     {
@@ -282,9 +278,6 @@ void AudioRecorder::StopRecording()
     m_audioInput->stop();
     m_audioInfo->stop();
     m_audioInput->disconnect(this);
-
-    //delete m_audioInput();
-
     QList<float> sd = m_audioInfo->soundData;
     qDebug() << "Final length : " << sd.length() / 48000;
 }
@@ -295,7 +288,6 @@ QList<float> AudioRecorder::getRecording()
     {
         qDebug() << "Wait";
     }
-    qDebug("Not anymore recording get data :");
     qDebug() << "buffer length : " << m_audioInfo->soundData.length();
     return m_audioInfo->soundData;
 }

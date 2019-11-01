@@ -73,7 +73,6 @@ public:
 
 private:
     QAudioFormat m_format;
-    QTimer *m_pushTimer = nullptr;
     QScopedPointer<QAudioOutput> m_audioOutput;
 
     bool m_pullMode = true;

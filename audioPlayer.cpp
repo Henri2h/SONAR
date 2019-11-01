@@ -59,14 +59,12 @@
 #include <QBuffer>
 
 AudioPlayer::AudioPlayer()
-    : m_pushTimer(new QTimer(this))
 {
     //    initializeAudio(QAudioDeviceInfo::defaultOutputDevice());
 }
 
 AudioPlayer::~AudioPlayer()
 {
-    m_pushTimer->stop();
 }
 void AudioPlayer::initializeAudio(QAudioFormat format)
 {
@@ -84,68 +82,70 @@ void AudioPlayer::initializeAudio(QAudioFormat format)
 
 void AudioPlayer::Play(QList<float> sound)
 {
+    //m_audioOutput->stop();
 
-    m_pushTimer->stop();
-    m_audioOutput->stop();
+    // only load the buffer the first time
+    // next time, just go to start and play it
+    // => save time
 
-    const int channelBytes = m_format.sampleSize() / 8;
-    const int sampleBytes = m_format.channelCount() * channelBytes;
-    int length = sound.length() * sampleBytes;
-
-    m_buffer.resize(length);
-    unsigned char *ptr = reinterpret_cast<unsigned char *>(m_buffer.data());
-
-    for (int pos = 0; pos < sound.length(); pos++)
+    if (buff.isOpen() == false)
     {
-        // Produces value (-1..1)
+        const int channelBytes = m_format.sampleSize() / 8;
+        const int sampleBytes = m_format.channelCount() * channelBytes;
+        int length = sound.length() * sampleBytes;
 
-        const qreal x = sound[pos];
-        //        const qreal x = qSin(2 * M_PI * 450.0 / 48000.0);
-        //qDebug()<< "Real : " << x << " sound : " << sound[pos];
-        for (int i = 0; i < m_format.channelCount(); ++i)
+        m_buffer.resize(length);
+        unsigned char *ptr = reinterpret_cast<unsigned char *>(m_buffer.data());
+
+        for (int pos = 0; pos < sound.length(); pos++)
         {
-            if (m_format.sampleSize() == 8)
-            {
-                if (m_format.sampleType() == QAudioFormat::UnSignedInt)
-                {
-                    const quint8 value = static_cast<quint8>((1.0 + x) / 2 * 255);
-                    *reinterpret_cast<quint8 *>(ptr) = value;
-                }
-                else if (m_format.sampleType() == QAudioFormat::SignedInt)
-                {
-                    const qint8 value = static_cast<qint8>(x * 127);
-                    *reinterpret_cast<qint8 *>(ptr) = value;
-                }
-            }
-            else if (m_format.sampleSize() == 16)
-            {
-                if (m_format.sampleType() == QAudioFormat::UnSignedInt)
-                {
-                    quint16 value = static_cast<quint16>((1.0 + x) / 2 * 65535);
-                    if (m_format.byteOrder() == QAudioFormat::LittleEndian)
-                        qToLittleEndian<quint16>(value, ptr);
-                    else
-                        qToBigEndian<quint16>(value, ptr);
-                }
-                else if (m_format.sampleType() == QAudioFormat::SignedInt)
-                {
-                    qint16 value = static_cast<qint16>(x * 32767);
-                    if (m_format.byteOrder() == QAudioFormat::LittleEndian)
-                        qToLittleEndian<qint16>(value, ptr);
-                    else
-                        qToBigEndian<qint16>(value, ptr);
-                }
-            }
-            ptr += channelBytes;
-        }
-    }
-    buff.setBuffer(&m_buffer);
+            const qreal x = sound[pos];
 
-    buff.open(QIODevice::ReadOnly);
-    qDebug() << "Filled buffer";
+            for (int i = 0; i < m_format.channelCount(); ++i)
+            {
+                if (m_format.sampleSize() == 8)
+                {
+                    if (m_format.sampleType() == QAudioFormat::UnSignedInt)
+                    {
+                        const quint8 value = static_cast<quint8>((1.0 + x) / 2 * 255);
+                        *reinterpret_cast<quint8 *>(ptr) = value;
+                    }
+                    else if (m_format.sampleType() == QAudioFormat::SignedInt)
+                    {
+                        const qint8 value = static_cast<qint8>(x * 127);
+                        *reinterpret_cast<qint8 *>(ptr) = value;
+                    }
+                }
+                else if (m_format.sampleSize() == 16)
+                {
+                    if (m_format.sampleType() == QAudioFormat::UnSignedInt)
+                    {
+                        quint16 value = static_cast<quint16>((1.0 + x) / 2 * 65535);
+                        if (m_format.byteOrder() == QAudioFormat::LittleEndian)
+                            qToLittleEndian<quint16>(value, ptr);
+                        else
+                            qToBigEndian<quint16>(value, ptr);
+                    }
+                    else if (m_format.sampleType() == QAudioFormat::SignedInt)
+                    {
+                        qint16 value = static_cast<qint16>(x * 32767);
+                        if (m_format.byteOrder() == QAudioFormat::LittleEndian)
+                            qToLittleEndian<qint16>(value, ptr);
+                        else
+                            qToBigEndian<qint16>(value, ptr);
+                    }
+                }
+                ptr += channelBytes;
+            }
+        }
+
+        buff.setBuffer(&m_buffer);
+        buff.open(QIODevice::ReadOnly);
+        buff.seek(0); // at start
+        m_audioOutput->start(&buff);
+    }
+
     buff.seek(0); // at start
-    m_audioOutput->start(&buff);
-    qDebug() << "We are ready";
 }
 
 void AudioPlayer::volumeChanged(int value)
