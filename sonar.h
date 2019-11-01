@@ -10,14 +10,26 @@ class SONAR
 {
 public:
     SONAR();
-    void getDistance();
+    QList<float> getDistance();
     void startSound();
     QList<float> getResults();
+
+    static const int air_speed = 343; // m/s
+    static const int max_distance = 4; // meters
 
 private:
     AudioPlayer outputPlayer;
     AudioRecorder inputPlayer;
     Chrip chrip;
+
+    int sample_desired_length;
+
+    QList<float> sound;
+
+    // distance related functions
+    QList<float> correlateToDistance();
+    int getStart(QList<float> data);
+    QList<float> getDistance(QList<float> data);
 
 private slots:
     void startRecording();
