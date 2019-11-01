@@ -66,7 +66,7 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) : QWidget(pa
     axisX->setLabelFormat("%g");
     axisX->setTitleText("Samples");
     QValueAxis *axisY = new QValueAxis;
-    axisY->setRange(-1, 1);
+    axisY->setRange(-1, 120);
     axisY->setTitleText("Audio level");
     m_chart->addAxis(axisX, Qt::AlignBottom);
     m_series->attachAxis(axisX);
@@ -82,28 +82,23 @@ Widget::Widget(const QAudioDeviceInfo &deviceInfo, QWidget *parent) : QWidget(pa
     qb->setText("Hello");
     mainLayout->addWidget(qb);
 
-    //m_audioInput->start(m_device);
-
-    qDebug() << "end";
     qb->setText("Start");
 
     startGettingDistance();
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&Widget::startGettingDistance));
-    timer->start(1000);
+    timer->start(1300);
 }
 
 void Widget::startGettingDistance()
 {
-    sn.startSound();
     QTimer::singleShot(900, this, SLOT(getresults()));
+    sn.startSound();
 }
 
 void Widget::getresults()
 {
-
-    qDebug() << "Going to get results";
     QList<float> data = sn.getResults();
     int l = data.length();
     if (l > m_buffer.length())
@@ -112,11 +107,8 @@ void Widget::getresults()
     {
         m_buffer[i].setY(data[i]);
     }
-    //m_series->append(points);
 
     m_series->replace(m_buffer);
-
-    qDebug() << "Going to get results - done";
 }
 
 Widget::~Widget()
