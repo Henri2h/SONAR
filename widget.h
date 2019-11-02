@@ -54,12 +54,21 @@ private slots:
     void getresults();
 
 private:
-    QChart *m_chart;
-    QLineSeries *m_series;
+
+    // charts :
+    QChart *m_chart_signal;
+    QChart *m_chart_distance;
+    QLineSeries *m_series_signal;
+    QLineSeries *m_series_distance;
+
+
     SONAR sn;
     QTimer *timer;
 
-    QVector<QPointF> m_buffer;
+    QVector<QPointF> m_buffer_signal;
+    QVector<QPointF> m_buffer_distance;
+
+    void DisplayPoints(QList<float> &data, QVector<QPointF> &buffer, QLineSeries &series);
 };
 
 #endif // WIDGET_H
