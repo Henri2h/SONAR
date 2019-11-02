@@ -6,23 +6,31 @@
 
 #include "chrip.h"
 
+struct sonarData{
+    QList<float> distance;
+    QList<float> signal;
+};
+
 class SONAR
 {
 public:
     SONAR();
     QList<float> getDistance();
     void startSound();
-    QList<float> getResults();
+    sonarData getResults();
 
     static const int air_speed = 343; // m/s
     static const int max_distance = 4; // meters
+
+
+    int sample_desired_length;
+    double max_time; // max time duration which take sound to go to and back
 
 private:
     AudioPlayer outputPlayer;
     AudioRecorder inputPlayer;
     Chrip chrip;
 
-    int sample_desired_length;
 
     QList<float> sound;
 

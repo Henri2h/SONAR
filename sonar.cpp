@@ -14,8 +14,11 @@ SONAR::SONAR()
 
     inputPlayer.initializeAudio(format);
     outputPlayer.initializeAudio(format);
-    float desired_length = format.sampleRate() * 2 * max_distance / (1.0*air_speed);
+
+    max_time = 2*max_distance/(1.0*air_speed);
+    float desired_length = format.sampleRate() * max_time;
     sample_desired_length = desired_length; // to int truncature
+
 }
 
 QList<float> SONAR::getDistance(QList<float> data)
@@ -78,9 +81,10 @@ void SONAR::startSound()
     outputPlayer.Play(sound);
 }
 
-QList<float> SONAR::getResults()
+sonarData SONAR::getResults()
 {
-    auto data = inputPlayer.getRecording();
+    sonarData snData;
+    snData.signal = inputPlayer.getRecording();
 
 
     // detect the start and remove first elements
@@ -88,18 +92,18 @@ QList<float> SONAR::getResults()
     We do this to have allways the same array, begin at the same time
     We truncate the end to have always the same lenght
 */
-    int start = getStart(data);
+    int start = getStart(snData.signal);
     for (int i = 0; i < start; i++){
-        data.removeFirst();
+        snData.signal.removeFirst();
     }
-    for (int i = start+sample_desired_length; i < data.length(); i++){
-        data.removeLast();
+    for (int i = start+sample_desired_length; i < snData.signal.length(); i++){
+        snData.signal.removeLast();
     }
 
-    QList<float> distance = getDistance(data);
+    snData.distance = getDistance(snData.signal);
 
     // test if playback work
     //outputPlayer.Play(data);
 
-    return distance;
+    return snData;
 }
