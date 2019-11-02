@@ -30,6 +30,8 @@
 #include "widget.h"
 #include "sonar.h"
 
+#include "mainwindow.h"
+
 #include <QtMultimedia/QAudioDeviceInfo>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -66,8 +68,7 @@ int main(int argc, char *argv[])
                              "There is no audio input device available.");
         return -1;
     }
-
-    Widget w(inputDevice);
-    w.show();
+    MainWindow mainWindow;
+    mainWindow.show();
     return a.exec();
 }
