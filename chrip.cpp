@@ -8,6 +8,9 @@ Chrip::Chrip()
 
 void Chrip::loadChrip()
 {
+    int numberOfPulse = 1;
+    int spacingBetweenPulses = 30;
+
     QFile file("Data/Chirp.csv");
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -26,6 +29,17 @@ void Chrip::loadChrip()
         amplitude.append(strings[1].toFloat());
 
         //   qDebug() << "Word list : |" << strings[0].toFloat() << "| : |" << strings[1].toFloat() << "|";
+    }
+
+    int chirp_len = amplitude.length();
+    // multiple pulses
+    for(int i = 1; i < numberOfPulse; i ++){
+        for(int j = 0; j < spacingBetweenPulses; j++){
+            amplitude.append(0);
+        }
+        for(int j = 0; j < chirp_len; j++){
+            amplitude.append(amplitude[j]);
+        }
     }
 }
 
