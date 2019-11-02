@@ -26,6 +26,14 @@ public:
     int sample_desired_length;
     double max_time; // max time duration which take sound to go to and back
 
+    static const bool distanceCompensation = true;
+
+    static const bool distanceMediumRemoval = true;
+    static const int distanceInitialisations = 10; // too long name
+
+    bool distanceInitialisationDone = false;
+
+    int distanceInitialisationRemaining = distanceInitialisations;
 private:
     AudioPlayer outputPlayer;
     AudioRecorder inputPlayer;
@@ -38,6 +46,7 @@ private:
     QList<float> correlateToDistance();
     int getStart(QList<float> data);
     QList<float> getDistance(QList<float> data);
+    QList<float> distanceThresholdList;
 
 private slots:
     void startRecording();
