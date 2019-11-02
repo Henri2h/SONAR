@@ -6,6 +6,7 @@
 #include <QtCharts/QChartGlobal>
 #include <QtCharts>
 
+#include "qcustomplot.h"
 #include "sonar.h"
 
 QT_BEGIN_NAMESPACE
@@ -34,6 +35,7 @@ private:
     QLineSeries *m_series_signal;
     QLineSeries *m_series_distance;
 
+    QCPColorMap *colorMap;
 
     SONAR sn;
     QTimer *timer;

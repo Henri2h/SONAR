@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot->yAxis->setLabel("y");
 
     // set up the QCPColorMap:
-    QCPColorMap *colorMap = new QCPColorMap(ui->customPlot->xAxis, ui->customPlot->yAxis);
+    colorMap = new QCPColorMap(ui->customPlot->xAxis, ui->customPlot->yAxis);
     int nx = 200;
     int ny = 200;
     colorMap->data()->setSize(nx, ny); // we want the color map to have nx * ny data points
@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->customPlot->plotLayout()->addElement(0, 1, colorScale); // add it to the right of the main axis rect
     colorScale->setType(QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
     colorMap->setColorScale(colorScale); // associate the color map with the color scale
-    colorScale->axis()->setLabel("Magnetic Field Strength");
+    colorScale->axis()->setLabel("Distance en focntion du temps");
 
     // set the color gradient of the color map to one of the presets:
     colorMap->setGradient(QCPColorGradient::gpPolar);
@@ -148,6 +148,9 @@ void MainWindow::getresults(){
 
     if(sn.distanceInitialisationDone){
         ui->lb_ready->setText("Ready !");
+    }
+    else{
+        ui->lb_ready->setText("Remaining : " + QString(sn.distanceInitialisationRemaining));
     }
 }
 

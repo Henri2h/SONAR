@@ -27,10 +27,10 @@
      <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="bt_start">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>690</y>
       <width>83</width>
       <height>25</height>
@@ -43,10 +43,10 @@
    <widget class="QLabel" name="lb_ready">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>104</x>
       <y>690</y>
-      <width>65</width>
-      <height>17</height>
+      <width>151</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -81,6 +81,19 @@
       <width>861</width>
       <height>351</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bt_save">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>690</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save chart</string>
     </property>
    </widget>
   </widget>
