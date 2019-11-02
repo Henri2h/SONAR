@@ -287,6 +287,7 @@ QList<float> AudioRecorder::getRecording()
     while (m_audioInfo->isRecording())
     {
         qDebug() << "Wait";
+        return QList<float>();
     }
     qDebug() << "buffer length : " << m_audioInfo->soundData.length();
     return m_audioInfo->soundData;
