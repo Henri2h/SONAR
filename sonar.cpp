@@ -133,21 +133,28 @@ sonarData SONAR::getResults()
     sonarData snData;
     snData.signal = inputPlayer.getRecording();
 
-    // detect the start and remove first elements
-    /*
-    We do this to have allways the same array, begin at the same time
-    We truncate the end to have always the same lenght
-*/
-    int start = getStart(snData.signal);
-    for (int i = 0; i < start; i++)
-    {
-        snData.signal.removeFirst();
+    if(snData.signal.length() < sample_desired_length){ // invalid data, we fill until we have enough data
+        for(int pos= snData.signal.length(); pos < sample_desired_length; pos++)
+            snData.signal.append(0);
     }
-    for (int i = start + sample_desired_length; i < snData.signal.length(); i++)
-    {
-        snData.signal.removeLast();
-    }
+    else{
 
+        // we have valid data, we can analyse it
+        // detect the start and remove first elements
+        /*
+        We do this to have allways the same array, begin at the same time
+        We truncate the end to have always the same lenght
+    */
+        int start = getStart(snData.signal);
+        for (int i = 0; i < start; i++)
+        {
+            snData.signal.removeFirst();
+        }
+        for (int i = start + sample_desired_length; i < snData.signal.length(); i++)
+        {
+            snData.signal.removeLast();
+        }
+    }
     snData.distance = getDistance(snData.signal);
 
     // test if playback work

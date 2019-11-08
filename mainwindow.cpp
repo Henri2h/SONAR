@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // set up the QCPColorMap:
     colorMap = new QCPColorMap(ui->customPlot->xAxis, ui->customPlot->yAxis);
-    int nx = 200;
+    int nx = sn.sample_desired_length;
     int ny = 200;
     colorMap->data()->setSize(nx, ny); // we want the color map to have nx * ny data points
     colorMap->data()->setRange(QCPRange(-4, 4), QCPRange(-4, 4)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     colorScale->axis()->setLabel("Distance en focntion du temps");
 
     // set the color gradient of the color map to one of the presets:
-    colorMap->setGradient(QCPColorGradient::gpPolar);
+    colorMap->setGradient(QCPColorGradient::gpSpectrum);
     // we could have also created a QCPColorGradient instance and added own colors to
     // the gradient, see the documentation of QCPColorGradient for what's possible.
 
@@ -146,11 +146,34 @@ void MainWindow::getresults(){
     DisplayPoints(snData.signal, m_buffer_signal, *m_series_signal);
     DisplayPoints(snData.distance, m_buffer_distance, *m_series_distance);
 
+    int nx = sn.sample_desired_length;
+    int ny = 200;
+
+    // now we assign some data, by accessing the QCPColorMapData instance of the color map:
+    double x, y, z;
+    for (int xIndex=0; xIndex<nx; ++xIndex)
+    {
+      for (int yIndex=0; yIndex<ny; ++yIndex)
+      {
+        colorMap->data()->cellToCoord(xIndex, yIndex, &x, &y);
+        double r = 3*qSqrt(x*x+y*y)+1e-2;
+        z = 2*x*(qCos(r+2)/r-qSin(r+2)/r); // the B field strength of dipole radiation (modulo physical constants)
+        z = snData.distance[xIndex];
+        colorMap->data()->setCell(xIndex, yIndex, z);
+      }
+    }
+    qDebug() << "Rescaling :";
+    colorMap->rescaleDataRange();
+    ui->customPlot->replot();
+    qDebug() << "Axes";
+    // rescale the key (x) and value (y) axes so the whole color map is visible:
+    ui->customPlot->rescaleAxes();
+
     if(sn.distanceInitialisationDone){
         ui->lb_ready->setText("Ready !");
     }
     else{
-        ui->lb_ready->setText("Remaining : " + QString(sn.distanceInitialisationRemaining));
+        ui->lb_ready->setText("Remaining : " + QString::number(sn.distanceInitialisationRemaining));
     }
 }
 
